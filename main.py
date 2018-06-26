@@ -3,6 +3,8 @@ import json
 import os
 from bs4 import BeautifulSoup
 import sys
+import urllib.request
+import urllib.parse
 
 
 class Crawler:
@@ -94,12 +96,14 @@ class Crawler:
             filename = os.path.join(self._path, author + '-' + str(self._anonymous_index) + '.' + ext)
             self._anonymous_index += 1
         if not os.path.exists(filename):
-            img = requests.get(url, stream=True)
-            if img.status_code == 200:
-                print('正在保存：{0}'.format(filename))
-                open(file=filename, mode='wb').write(img.content)
-            else:
-                print('下载失败，错误代码：{0}'.format(img.status_code))
+            # img = requests.get(url, stream=True)
+            req = urllib.request.Request(url)
+            img = urllib.request.urlopen(req).read()
+            # if img.status_code == 200:
+            print('正在保存：{0}'.format(filename))
+            open(file=filename, mode='wb').write(img)
+            # else:
+            #     print('下载失败，错误代码：{0}'.format(img.status_code))
 
     def start(self):
         self.get_js(limit=self._limit, offset=self._offset)
